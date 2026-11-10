@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalei AI Glasses</title>
+<meta name="description" content="AI glasses that help children with dyslexia read and write with confidence. Sign up for early access.">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+/* ===== CONFIG: change the name and the form here ===== */
+:root{
+  --font:"Lexend",system-ui,sans-serif;
+  --bg:#F6F8FC; --surface:#FFFFFF; --ink:#0E1726; --muted:#55627A; --line:#DDE3EE;
+  --accent:#3355F5; --accent-ink:#FFFFFF; --accent-soft:#E8EDFF; --teal:#0FA39A; --teal-soft:#E2F6F4;
+  --radius:18px; --shadow:0 10px 30px rgba(20,35,80,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.65 var(--font);font-weight:300}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.mono{font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3,strong,b,.btn,label,summary,th{font-weight:600}
+h1,h2,h3{line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.1rem,5.5vw,3.6rem);letter-spacing:-.02em}
+h2{font-size:clamp(1.6rem,3.5vw,2.3rem)}
+h3{font-size:1.2rem}
+p{margin:0 0 1em}
+.lead{font-size:1.2rem;color:var(--muted);max-width:36em}
+section{padding:72px 0}
+.btn{display:inline-block;border:0;border-radius:999px;padding:14px 26px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px rgba(51,85,245,.3)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-ghost{color:var(--ink);background:transparent;border:1.5px solid var(--line)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+
+@font-face{font-family:"OpenDyslexic";src:url("fonts/OpenDyslexic-Regular.woff") format("woff");font-weight:300 500;font-display:swap}
+@font-face{font-family:"OpenDyslexic";src:url("fonts/OpenDyslexic-Bold.woff") format("woff");font-weight:600 800;font-display:swap}
+body.f-verdana{--font:Verdana,Geneva,sans-serif}
+body.f-verdana,body.f-od{font-weight:400}
+body.f-od{--font:"OpenDyslexic",Verdana,sans-serif;font-size:16.5px}
+body.spaced{letter-spacing:.08em;word-spacing:.22em}
+body.spaced h1,body.spaced h2{letter-spacing:.02em}
+body.spaced .page,body.spaced .notebook,body.spaced .adapted{letter-spacing:normal;word-spacing:normal}
+body.spaced .adapted{letter-spacing:.1em;word-spacing:.32em}
+input,select,button{font-family:inherit}
+
+/* font menu */
+.fontsel{position:relative}
+.fontbtn{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:5px 13px;font:600 .95rem var(--font);cursor:pointer;color:var(--ink)}
+.fontbtn[aria-expanded="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.fontmenu{position:absolute;right:0;top:calc(100% + 10px);width:290px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px rgba(20,35,80,.16);padding:10px;display:none;z-index:20}
+.fontmenu.open{display:block}
+.fontmenu .mono{padding:6px 8px 4px}
+.fopt{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;border:0;background:transparent;border-radius:10px;padding:9px 10px;cursor:pointer;color:var(--ink)}
+.fopt:hover{background:#F1F4FA}
+.fopt[aria-checked="true"]{background:var(--accent-soft)}
+.fopt .fn{font-size:1.05rem}
+.fopt .fd{font:300 .8rem/1.4 var(--font);color:var(--muted);letter-spacing:normal;word-spacing:normal}
+.fsep{border:0;border-top:1px dashed var(--line);margin:6px 4px}
+.frow{display:flex;justify-content:space-between;align-items:center;padding:8px 10px 4px;gap:10px}
+.frow label{margin:0;display:flex;gap:8px;align-items:center;font-size:.95rem;cursor:pointer}
+.frow input{width:18px;height:18px;accent-color:var(--accent)}
+.freset{border:0;background:transparent;color:var(--accent);font:600 .88rem var(--font);cursor:pointer;padding:4px}
+@media (max-width:520px){.fontmenu{position:fixed;left:16px;right:16px;top:70px;width:auto}}
+
+/* nav */
+header{position:sticky;top:0;z-index:10;background:rgba(246,248,252,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:700;font-size:1.15rem;display:flex;align-items:center;gap:22px;color:var(--ink);text-decoration:none}
+.logo-svg{height:38px;width:auto;display:block}
+.nav-right{display:flex;gap:10px;align-items:center}
+.lang{display:flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{border:0;background:transparent;font:inherit;font-size:.9rem;font-weight:700;padding:6px 12px;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.nav .btn{padding:9px 18px;font-size:.95rem}
+
+/* hero */
+.hero{padding:64px 0 56px}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:24px}
+.hero-grid > div:first-child{max-width:760px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 14px}
+.note{font-size:.92rem;color:var(--muted)}
+.lens-card{background:var(--surface);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:28px}
+.hud-line{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border-radius:12px;padding:10px 14px;font-size:1rem}
+.hud-line.teal{background:var(--teal-soft)}
+.hud-line .mono{font-size:.7rem;min-width:74px}
+.syll{letter-spacing:.12em;word-spacing:.3em;font-weight:700}
+.fix s{color:#C0392B;text-decoration-thickness:2px}
+
+.hero-img{margin:8px auto 0;max-width:980px;filter:drop-shadow(0 30px 40px rgba(20,35,80,.18))}
+.hero-img img{width:100%;height:auto;display:block}
+
+/* product parts */
+.explorer{position:relative;max-width:1000px;margin:36px auto 28px}
+.explorer img{width:100%;height:auto;display:block;filter:drop-shadow(0 26px 36px rgba(20,35,80,.16))}
+.hot{position:absolute;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;border:0;background:var(--accent);color:#fff;font:600 .95rem var(--font);cursor:pointer;box-shadow:0 0 0 6px rgba(51,85,245,.18);transition:transform .15s,background .15s}
+.hot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent);opacity:.6;animation:pulse 2.2s infinite}
+.hot:hover,.hot.on{transform:translate(-50%,-50%) scale(1.15);background:var(--ink)}
+@keyframes pulse{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.hot::after{animation:none}}
+.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.part{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.part.on{border-color:var(--accent);box-shadow:0 8px 24px rgba(51,85,245,.14)}
+.part h3{display:flex;align-items:center;gap:10px;font-size:1.05rem;margin-bottom:.35em}
+.part .n{width:26px;height:26px;flex:none;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:.85rem}
+.part p{margin:0;font-size:.95rem;color:var(--muted)}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;background:var(--accent);color:#fff;border-radius:999px;padding:1px 9px;margin-left:4px;vertical-align:2px}
+
+/* before / after demos */
+.demos{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
+.demo-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.demo-head h3{margin:0}
+.switch{display:inline-flex;background:#EEF1F7;border-radius:999px;padding:4px;position:relative}
+.switch button{position:relative;z-index:1;border:0;background:transparent;font:600 .88rem var(--font);padding:8px 14px;border-radius:999px;cursor:pointer;color:var(--muted);transition:color .2s}
+.switch button[aria-pressed="true"]{color:#fff}
+.switch .thumb{position:absolute;top:4px;bottom:4px;left:4px;border-radius:999px;background:var(--ink);transition:left .25s,width .25s}
+.switch.on .thumb{background:var(--accent)}
+.stage{position:relative;border-radius:14px;overflow:hidden;min-height:310px;background:#FFFDF7;border:1px solid var(--line)}
+.page{background:#FFFDF7;padding:22px 24px;font:15px/1.38 Georgia,"Times New Roman",serif;color:#222;text-align:justify;transition:opacity .35s,filter .35s}
+.notebook{background:#FFFEFB repeating-linear-gradient(transparent 0 35px,#CFE0F5 35px 36px);padding:22px 24px 30px 52px;font:600 30px/36px "Caveat",cursive;color:#2A3A6A;min-height:310px;position:relative;transition:opacity .35s}
+.notebook::before{content:"";position:absolute;left:38px;top:0;bottom:0;width:2px;background:#F2B8B8}
+.stage.on .page{opacity:.35;filter:blur(.6px)}
+.hud{position:absolute;inset:auto 14px 14px 14px;background:rgba(240,244,255,.94);backdrop-filter:blur(6px);border:1.5px solid rgba(51,85,245,.45);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(51,85,245,.2);opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s;pointer-events:none}
+.stage.on .hud{opacity:1;transform:none;pointer-events:auto}
+.hud .mono{font-size:.68rem;display:flex;justify-content:space-between;margin-bottom:6px}
+.adapted{font:19px/1.9 Verdana,Arial,sans-serif;letter-spacing:.1em;word-spacing:.32em;color:#0E1726}
+.adapted .sy{color:var(--accent)}
+.adapted mark{background:#FFE9A8;border-radius:4px;padding:0 3px}
+.def{margin-top:8px;font-size:.88rem;color:var(--muted)}
+.def b{color:var(--ink)}
+.wrong{position:relative;transition:color .3s}
+.stage.on .wrong{text-decoration:underline wavy #E07A1F 2px;text-underline-offset:6px;color:#B4530A}
+.fixed{display:none;color:var(--teal)}
+.stage.solved .wrong{display:none}
+.stage.solved .fixed{display:inline}
+.hud-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hud-actions button{border:1.5px solid var(--accent);background:#fff;color:var(--accent);font:600 .85rem var(--font);border-radius:999px;padding:6px 14px;cursor:pointer}
+.hud-actions button.primary{background:var(--accent);color:#fff}
+.hint{font-size:.98rem;color:var(--ink)}
+.caption{margin:0;font-size:.95rem;color:var(--muted)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.num{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;margin-bottom:14px}
+
+/* proof */
+.proof{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:28px}
+.proof-item{border-left:3px solid var(--teal);padding-left:16px}
+.small{font-size:.9rem;color:var(--muted)}
+
+/* versions */
+.versions{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0 26px}
+.vcard{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.vcard.school{border-color:var(--accent)}
+.tag{display:inline-block;align-self:flex-start;background:var(--accent);color:#fff;border-radius:999px;font-size:.8rem;font-weight:700;padding:3px 12px;margin-bottom:12px}
+.vcard .btn{margin-top:auto;align-self:flex-start}
+.vcard ul{padding-left:1.1em;margin:0 0 22px}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%}
+th,td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-size:1rem;background:#FAFBFE}
+td.c{text-align:center;width:22%}
+tbody tr:last-child td{border-bottom:0}
+.yes{color:var(--teal);font-weight:700}
+.no{color:#A0A9B8}
+
+/* kids / adults */
+.tabs{display:flex;justify-content:center;gap:34px;border-bottom:1px solid var(--line);margin:28px 0 28px}
+.tabs button{border:0;background:none;font:600 1rem var(--font);letter-spacing:.18em;text-transform:uppercase;padding:12px 4px;color:#8A94A8;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--ink)}
+.tabpanel{display:none}.tabpanel.on{display:block}
+/* kids / adults segments */
+body.seg-kids [data-seg="adults"],body.seg-adults [data-seg="kids"]{display:none!important}
+body:not(.seg-kids):not(.seg-adults) main>section:not(#gate){display:none}
+body.seg-kids #gate,body.seg-adults #gate{display:none}
+.nav-left{display:flex;align-items:center;gap:28px}
+.seg{display:flex;gap:18px}
+.seg button{border:0;background:none;font:600 .85rem var(--font);letter-spacing:.16em;text-transform:uppercase;padding:8px 2px;color:#8A94A8;cursor:pointer;border-bottom:2px solid transparent}
+.seg button[aria-pressed="true"]{color:var(--ink);border-color:var(--ink)}
+#gate{padding:64px 0 88px}
+#gate h1{margin:6px 0 0}
+.gate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:36px}
+.gcard{min-width:0;display:flex;flex-direction:column;gap:8px;text-align:left;padding:28px 24px;border:1.5px solid var(--line);border-radius:24px;background:var(--surface);cursor:pointer;font:inherit;color:var(--ink);transition:border-color .2s,transform .2s}
+.gcard:hover,.gcard:focus-visible{border-color:var(--accent);transform:translateY(-2px)}
+.gcard img{width:100%;height:auto;margin-bottom:10px}
+.gcard .gt{font-weight:700;font-size:1.6rem;line-height:1.2}
+.gcard .gs{color:var(--muted);font-size:1rem;font-weight:300}
+.gcard .go{margin-top:10px;color:var(--accent);font-weight:700}
+.prod{display:grid;grid-template-columns:1.3fr .7fr;gap:36px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:var(--shadow);margin-bottom:26px}
+.stagebg{position:relative;border-radius:22px;padding:18px;background:linear-gradient(135deg,#EEF2FF,#FDF2F8 55%,#FFF8E1);overflow:hidden}
+.stagebg::before{content:"";position:absolute;left:18%;top:18%;width:48%;height:64%;border-radius:50%;background:radial-gradient(circle,#C9D6FF 0,#C9D6FF 38%,transparent 70%)}
+.stagebg img{position:relative;width:100%;height:auto;display:block}
+.sw-label{font-weight:600;font-size:.95rem;margin:16px 0 8px}
+.sw-label span{font-weight:300;color:var(--muted)}
+.swatches{display:flex;gap:12px}
+.swatches button{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px #C9D1DF;cursor:pointer;padding:0}
+.swatches button[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--ink)}
+.sw-clear{opacity:.75;background-image:linear-gradient(135deg,rgba(255,255,255,.65) 0 35%,transparent 36%)!important}
+.prod ul{padding-left:1.1em;margin:12px 0 20px}
+
+/* privacy */
+.priv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px}
+
+/* form */
+.signup{background:var(--ink);color:#fff;border-radius:32px;padding:48px;display:grid;grid-template-columns:.9fr 1.1fr;gap:40px}
+.signup .lead{color:#C4CCDB}
+.signup .mono{color:#8FA6FF}
+form{display:grid;gap:14px}
+label{font-weight:700;font-size:.95rem;display:block;margin-bottom:6px}
+.opt{font-weight:400;color:#AEB8CA}
+input[type=email],input[type=text],select{width:100%;padding:13px 14px;border-radius:12px;border:1.5px solid #3A4660;background:#18233A;color:#fff;font:inherit}
+input::placeholder{color:#7D89A0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:.95rem;color:#DCE2EC}
+.check input{margin-top:5px;width:18px;height:18px;flex:none;accent-color:var(--teal)}
+.choice{display:flex;gap:8px;flex-wrap:wrap}
+.choice label{margin:0;font-weight:400;border:1.5px solid #3A4660;border-radius:999px;padding:8px 16px;cursor:pointer}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice input:checked+span{color:#fff}
+.choice label:has(input:checked){background:var(--accent);border-color:var(--accent)}
+.choice label:has(input:focus-visible){outline:3px solid var(--teal);outline-offset:2px}
+.signup .btn-primary{justify-self:start}
+.msg{padding:14px 16px;border-radius:12px;display:none}
+.msg.ok{display:block;background:var(--teal-soft);color:#064E49}
+.msg.err{display:block;background:#FDECEA;color:#8A1F14}
+.legal{font-size:.82rem;color:#9AA6BB}
+.signup .legal a{color:#C9D3FF}
+
+/* faq */
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:12px}
+summary{font-weight:700;cursor:pointer}
+details p{margin:12px 0 0;color:var(--muted)}
+footer{padding:40px 0 60px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+
+@media (max-width:860px){
+  .hero-grid,.signup{grid-template-columns:1fr}
+  .steps,.proof-grid,.priv-grid,.versions,.demos,.parts,.prod{grid-template-columns:1fr}
+  .prod{padding:20px 16px}
+  .tabs{gap:20px}
+  .gate-grid{grid-template-columns:minmax(0,1fr)}
+  .hot{width:28px;height:28px;font-size:.8rem}
+  .signup{padding:30px 20px;border-radius:24px}
+  section{padding:52px 0}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px}
+  .row{grid-template-columns:1fr}
+  .nav .btn{display:none}
+  .nav{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;row-gap:4px}
+  .nav-left{gap:16px}
+  .seg{gap:12px}
+  .seg button{font-size:.78rem;letter-spacing:.12em}
+  body{font-size:17px}
+  th,td{padding:12px 10px;font-size:.92rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="nav-left"><a class="logo" href="#top" aria-label="Kalei, home"><svg class="logo-svg" viewBox="-14 0 325 142" role="img" aria-label="Kalei"><g style="font-family:Lexend,sans-serif;font-weight:600;font-size:120px"><text x="0.0" y="100.0" transform="rotate(-16 36.5 55.5)" fill="#6B6B76">k</text><text x="85.0" y="120.4" transform="rotate(9 124.0 88.4)" fill="#6B6B76">a</text><text x="159.4" y="130.0" style="fill:var(--ink)">l</text><text x="194.4" y="130.0" style="fill:var(--ink)">e</text><text x="264.4" y="130.0" style="fill:var(--ink)">&#305;</text></g><rect x="267.9" y="31" width="26" height="26" rx="4.5" style="fill:var(--accent)" transform="rotate(22 280.9 44)"/></svg></a><div class="seg" role="group" aria-label="Kids or adults"><button type="button" data-seg-btn="kids" aria-pressed="false" data-i18n="tab.kids">Kids</button><button type="button" data-seg-btn="adults" aria-pressed="false" data-i18n="tab.adults">Adults</button></div></div>
+    <div class="nav-right">
+      <div class="fontsel">
+        <button type="button" class="fontbtn" id="fontbtn" aria-haspopup="true" aria-expanded="false" aria-controls="fontmenu" aria-label="Font">Aa</button>
+        <div class="fontmenu" id="fontmenu">
+          <div class="mono" data-i18n="font.title">Choose the font</div>
+          <button type="button" class="fopt" role="menuitemradio" data-font="lexend" aria-checked="true"><span class="fn" style="font-family:Lexend">Lexend</span><span class="fd" data-i18n="font.lexend">Default</span></button>
+          <button type="button" class="fopt" role="menuitemradio" data-font="verdana" aria-checked="false"><span class="fn" style="font-family:Verdana">Verdana</span><span class="fd" data-i18n="font.verdana">One of the fonts studies found easier to read with dyslexia</span></button>
+          <hr class="fsep">
+          <button type="button" class="fopt" role="menuitemradio" data-font="od" aria-checked="false"><span class="fn" style="font-family:OpenDyslexic">OpenDyslexic</span><span class="fd" data-i18n="font.od">Popular, but studies haven't found it improves reading. Some children just prefer it.</span></button>
+          <hr class="fsep">
+          <div class="frow">
+            <label><input type="checkbox" id="spacing"><span data-i18n="font.spacing">Extra spacing</span></label>
+            <button type="button" class="freset" id="freset" data-i18n="font.reset">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+      <a class="btn btn-primary" href="#signup" data-i18n="nav.cta">Get early access</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- GATE: choose kids or adults -->
+<section id="gate">
+  <div class="wrap">
+    <div class="mono" data-i18n="gate.eyebrow">AI glasses for dyslexia</div>
+    <h1 data-i18n="gate.title">Who are the glasses for?</h1>
+    <div class="gate-grid">
+      <button type="button" class="gcard" data-seg-btn="kids">
+        <img src="img/glasses-blue-clear.webp" width="1400" height="412" alt="">
+        <span class="gt" data-i18n="gate.kids">For my child</span>
+        <span class="gs" data-i18n="gate.kidsSub">Kids · Home and School, in four colours</span>
+        <span class="go" data-i18n="gate.go">Continue →</span>
+      </button>
+      <button type="button" class="gcard" data-seg-btn="adults">
+        <img src="img/glasses.webp" width="1400" height="412" alt="">
+        <span class="gt" data-i18n="gate.adults">For me</span>
+        <span class="gs" data-i18n="gate.adultsSub">Adults · Everyday, in discreet black</span>
+        <span class="go" data-i18n="gate.go">Continue →</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="mono" data-i18n="hero.eyebrow">AI glasses for children with dyslexia</div>
+      <h1 data-i18n="hero.title">Reading aloud shouldn't be scary.</h1>
+      <p class="lead" data-i18n="hero.lead">Smart glasses that adapt text to the way your child reads, spot spelling mistakes while they write, and turn those mistakes into five minutes of practice a day.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#signup" data-i18n="hero.cta">Get early access</a>
+        <a class="btn btn-ghost" href="#versions" data-i18n="hero.cta2">Compare Home and School</a>
+      </div>
+      <p class="note" data-i18n="hero.note">In development. Signing up is free and you only get news about the product.</p>
+    </div>
+    <picture class="hero-img">
+      <source srcset="img/glasses.webp" type="image/webp">
+      <img src="img/glasses.png" width="1400" height="412" alt="" data-i18n-alt="img.alt">
+    </picture>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+    <div class="mono" data-i18n="how.eyebrow">How it works</div>
+    <h2 data-i18n="how.title">Three steps, no extra effort</h2>
+    <div class="steps">
+      <div class="card">
+        <div class="num">1</div>
+        <h3 data-i18n="how.s1t">It sees the page</h3>
+        <p data-i18n="how.s1">A small camera in the frame recognises whether your child is reading or writing.</p>
+      </div>
+      <div class="card">
+        <div class="num">2</div>
+        <h3 data-i18n="how.s2t">It adapts to your child</h3>
+        <p data-i18n="how.s2">The text appears in the lens in a font that research found easier with dyslexia, with extra spacing and long words split into syllables. It can also read it aloud and explain any word.</p>
+      </div>
+      <div class="card">
+        <div class="num">3</div>
+        <h3 data-i18n="how.s3t">It helps them learn</h3>
+        <p data-i18n="how.s3">When they write, it marks a mistake and lets them try again before showing the answer. The app turns their own mistakes into short flashcards and quizzes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section id="product" class="proof">
+  <div class="wrap">
+    <div class="mono" data-i18n="prod.eyebrow">Inside the glasses</div>
+    <h2 data-i18n="prod.title">Everything they need, nothing they don't</h2>
+    <p class="lead" data-i18n="prod.lead">Tap a number to see what each part does.</p>
+    <div class="explorer">
+      <picture><source srcset="img/glasses.webp" type="image/webp"><img src="img/glasses.png" width="1400" height="412" alt="" data-i18n-alt="img.alt"></picture>
+      <button class="hot" data-part="1" style="left:73.7%;top:26%" aria-label="1">1</button>
+      <button class="hot" data-seg="kids" data-part="2" style="left:29.2%;top:18%" aria-label="2">2</button>
+      <button class="hot" data-part="3" style="left:87%;top:52%" aria-label="3">3</button>
+      <button class="hot" data-part="4" style="left:16%;top:33%" aria-label="4">4</button>
+      <button class="hot" data-part="5" style="left:5%;top:60%" aria-label="5">5</button>
+      <button class="hot" data-part="6" style="left:52%;top:58%" aria-label="6">6</button>
+    </div>
+    <div class="parts">
+      <div class="part" data-part="1"><h3><span class="n">1</span><span data-i18n="p1t">Camera</span></h3><p data-i18n="p1">In the bridge, between the eyes. It looks at the page your child is reading or writing. Images are analysed and deleted, never stored.</p></div>
+      <div class="part" data-seg="kids" data-part="2"><h3><span class="n">2</span><span><span data-i18n="p2t">Exam light</span><span class="pill" data-i18n="ver.school">School</span></span></h3><p data-i18n="p2">A small light on the outside of the arm. It turns on during exams, so the teacher can see at a glance that corrections are off. Your child doesn't see it.</p></div>
+      <div class="part" data-part="3"><h3><span class="n">3</span><span data-i18n="p3t">Display in the lens</span></h3><p data-i18n="p3">A tiny transparent display shows the adapted text and hints. Only your child can see it, and the lens stays clear.</p></div>
+      <div class="part" data-part="4"><h3><span class="n">4</span><span data-i18n="p4t">Battery and chip</span></h3><p data-i18n="p4">Hidden inside the arms, so the front stays slim. Home lasts for homework sessions; School is built for a full school day.</p></div>
+      <div class="part" data-part="5"><h3><span class="n">5</span><span data-i18n="p5t">Speaker near the ear</span></h3><p data-i18n="p5">Reads words and sentences aloud, quietly, only for your child.</p></div>
+      <div class="part" data-part="6"><h3><span class="n">6</span><span data-i18n="p6t">Clear lenses</span></h3><p data-i18n="p6">They look like normal glasses. Prescription lenses are planned through opticians.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMOS -->
+<section id="features">
+  <div class="wrap">
+    <div class="mono" data-i18n="demo.eyebrow">See the difference</div>
+    <h2 data-i18n="demo.title">Switch the glasses on</h2>
+    <p class="lead" data-i18n="demo.lead">This is what your child sees with and without them.</p>
+    <div class="demos">
+
+      <div class="demo" data-demo="read">
+        <div class="demo-head">
+          <h3 data-i18n="demo.readT">Reading</h3>
+          <div class="switch" role="group"><span class="thumb"></span>
+            <button type="button" data-v="off" aria-pressed="true" data-i18n="demo.off">Without glasses</button>
+            <button type="button" data-v="on" aria-pressed="false" data-i18n="demo.on">With glasses</button>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="page" data-i18n="demo.page">The little fox lived at the edge of an enormous forest. Every morning she explored the mysterious paths between the trees, looking for something new. One day she discovered a hidden river that nobody in the village had ever seen.</div>
+          <div class="hud">
+            <div class="mono"><span data-i18n="hud.read">Reading</span><span data-i18n="demo.aloud">Read aloud ▸</span></div>
+            <div class="adapted" data-i18n-html="demo.adapted">The little fox lived at the edge of an <mark>e<span class="sy">·</span>nor<span class="sy">·</span>mous</mark> forest.</div>
+            <div class="def" data-i18n-html="demo.def"><b>enormous:</b> very, very big</div>
+          </div>
+        </div>
+        <p class="caption" data-i18n="demo.readC">A font that research found easier with dyslexia, more space between letters and words, long words split into syllables, and a dictionary for any word.</p>
+      </div>
+
+      <div class="demo" data-demo="spell">
+        <div class="demo-head">
+          <h3 data-i18n="demo.spellT">Spelling</h3>
+          <div class="switch" role="group"><span class="thumb"></span>
+            <button type="button" data-v="off" aria-pressed="true" data-i18n="demo.off">Without glasses</button>
+            <button type="button" data-v="on" aria-pressed="false" data-i18n="demo.on">With glasses</button>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="notebook" data-i18n-html="demo.note">I like the park <span class="wrong">becaus</span><span class="fixed">because</span> it is big and green.</div>
+          <div class="hud">
+            <div class="mono"><span data-i18n="hud.write">Writing</span><span>1 / 1</span></div>
+            <div class="hint" data-i18n="demo.hint">Check this word again. Can you find what's missing?</div>
+            <div class="hud-actions">
+              <button type="button" class="primary" data-act="answer" data-i18n="demo.answer">Show answer</button>
+              <button type="button" data-act="reset" data-i18n="demo.reset">Try again</button>
+            </div>
+          </div>
+        </div>
+        <p class="caption" data-i18n="demo.spellC">First a hint, then the answer, so your child learns the word instead of just copying it. The mistake goes to the app for practice later.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="proof">
+  <div class="wrap">
+    <div class="mono" data-i18n="proof.eyebrow">Built on what already works</div>
+    <h2 data-i18n="proof.title">No science fiction</h2>
+    <p class="lead" data-i18n="proof.lead">Every part of these glasses already exists today. What is new is putting them together for children with dyslexia.</p>
+    <div class="proof-grid">
+      <div class="proof-item">
+        <h3 data-i18n="proof.p1t">Glasses that read</h3>
+        <p data-i18n="proof.p1">AI glasses for blind people already read printed and handwritten text aloud.</p>
+      </div>
+      <div class="proof-item">
+        <h3 data-i18n="proof.p2t">A screen in the lens</h3>
+        <p data-i18n="proof.p2">Display glasses on sale today show text inside the lens and last around six hours of mixed use.</p>
+      </div>
+      <div class="proof-item">
+        <h3 data-i18n="proof.p3t">Backed by research</h3>
+        <p data-i18n="proof.p3">Font choice (Rello and Baeza-Yates, 2013) and extra letter spacing (Zorzi et al., 2012) helped readers with dyslexia make fewer mistakes.</p>
+      </div>
+    </div>
+    <p class="small" data-i18n="proof.honest">To be honest: these studies are small, so the results are promising, not final. That is why we will test with real families before promising anything.</p>
+  </div>
+</section>
+
+<!-- VERSIONS -->
+<section id="versions">
+  <div class="wrap">
+    <div class="mono" data-i18n="ver.eyebrow">Kids and adults</div>
+    <h2 data-i18n="ver.title2">Choose yours</h2>
+
+    <div class="tabpanel on" id="tab-kids" data-seg="kids">
+    <div class="prod">
+      <div class="stagebg"><img id="kidsimg" src="img/glasses.webp" width="1400" height="412" alt="" data-i18n-alt="img.alt"></div>
+      <div>
+        <div class="mono" data-i18n="kids.eyebrow">For children</div>
+        <h3 style="font-size:1.6rem" data-i18n="kids.title">Their glasses, their colour</h3>
+        <p data-i18n="kids.lead" style="color:var(--muted)">Discreet black, or a clear colour they choose. The same technology inside.</p>
+        <div class="sw-label"><span data-i18n="kids.colour">Colour</span>: <span id="cname" data-i18n="c.black">Black</span></div>
+        <div class="swatches">
+          <button type="button" aria-pressed="true" data-img="glasses" data-name="c.black" style="background:#3B414D" aria-label="Black"></button>
+          <button type="button" aria-pressed="false" data-img="glasses-blue-clear" data-name="c.blue" class="sw-clear" style="background-color:#5096F0" aria-label="Clear blue"></button>
+          <button type="button" aria-pressed="false" data-img="glasses-pink-clear" data-name="c.pink" class="sw-clear" style="background-color:#F069A5" aria-label="Clear pink"></button>
+          <button type="button" aria-pressed="false" data-img="glasses-yellow-clear" data-name="c.yellow" class="sw-clear" style="background-color:#F5BE14" aria-label="Clear yellow"></button>
+        </div>
+        <p class="small" style="margin-top:12px" data-i18n="kids.both">Every colour comes in Home and School.</p>
+      </div>
+    </div>
+    <div class="versions">
+      <div class="vcard">
+        <h3 data-i18n="ver.home">Home</h3>
+        <p data-i18n="ver.homeDesc">For homework and reading at home, with you nearby.</p>
+        <ul>
+          <li data-i18n="ver.home1">All reading and writing help</li>
+          <li data-i18n="ver.home2">Practice app with progress for parents</li>
+          <li data-i18n="ver.home3">Light, everyday frame</li>
+        </ul>
+        <a class="btn btn-ghost" href="#signup" data-pick="home" data-i18n="ver.pickHome">I'm interested in Home</a>
+      </div>
+      <div class="vcard school">
+        <span class="tag" data-i18n="ver.tag">For the classroom</span>
+        <h3 data-i18n="ver.school">School</h3>
+        <p data-i18n="ver.schoolDesc">Everything in Home, built to last a full school day and keep the teacher in control.</p>
+        <ul>
+          <li data-i18n="ver.school1">Exam mode that only the teacher can unlock</li>
+          <li data-i18n="ver.school2">Battery for the whole school day</li>
+          <li data-i18n="ver.school3">Reinforced frame for the playground</li>
+        </ul>
+        <a class="btn btn-primary" href="#signup" data-pick="school" data-i18n="ver.pickSchool">I'm interested in School</a>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th data-i18n="t.feature">Feature</th><th class="c" data-i18n="ver.home">Home</th><th class="c" data-i18n="ver.school">School</th></tr></thead>
+        <tbody>
+          <tr><td data-i18n="t.r1">Reading aids: font, spacing, syllables</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r2">Reads aloud and explains words</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r3">Spelling help while writing</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r4">Practice app: flashcards and quizzes</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r5">Progress for parents</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r6">Exam mode: corrections off, unlocked only by the teacher</td><td class="c no">–</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r7">Teacher view on phone or tablet</td><td class="c no">–</td><td class="c yes">✓</td></tr>
+          <tr><td data-i18n="t.r8">Battery</td><td class="c" data-i18n="t.r8h">Homework sessions</td><td class="c" data-i18n="t.r8s">Full school day</td></tr>
+          <tr><td data-i18n="t.r9">Frame</td><td class="c" data-i18n="t.r9h">Light</td><td class="c" data-i18n="t.r9s">Reinforced</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:14px" data-i18n="ver.foot">These are the goals for the first version, based on smart glasses that exist today. They may change as we test.</p>
+    </div>
+
+    <div class="tabpanel on" id="tab-adults" data-seg="adults">
+    <div class="prod">
+      <div class="stagebg"><img src="img/glasses.webp" width="1400" height="412" alt="" data-i18n-alt="img.alt" loading="lazy"></div>
+      <div>
+        <div class="mono" data-i18n="ad.eyebrow">For adults</div>
+        <h3 style="font-size:1.6rem">Everyday</h3>
+        <p style="color:var(--muted)" data-i18n="ad.lead">Dyslexia doesn't end at school. For reading and writing at work, at university or at home.</p>
+        <ul>
+          <li data-i18n="ad.f1">All reading and writing help</li>
+          <li data-i18n="ad.f2">Practice app with your own progress</li>
+          <li data-i18n="ad.f3">Discreet black frame</li>
+        </ul>
+        <a class="btn btn-primary" href="#signup" data-pick="everyday" data-i18n="ad.pick">I'm interested in Everyday</a>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="proof">
+  <div class="wrap">
+    <div class="mono" data-i18n="priv.eyebrow">Safety and privacy</div>
+    <h2 data-i18n="priv.title">Designed for children, first</h2>
+    <div class="priv-grid">
+      <div class="proof-item">
+        <h3 data-i18n="priv.p1t">No video is stored</h3>
+        <p data-i18n="priv.p1">The camera only looks at the page. The image is analysed and deleted straight away. It is never saved or shared.</p>
+      </div>
+      <div class="proof-item">
+        <h3 data-i18n="priv.p2t">Minimal data</h3>
+        <p data-i18n="priv.p2">We only keep what helps your child learn, like the words they find hard. You can delete it at any time.</p>
+      </div>
+      <div class="proof-item">
+        <h3 data-i18n="priv.p3t">They look like normal glasses</h3>
+        <p data-i18n="priv.p3">A sleek design, nothing that makes your child stand out in class.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup">
+  <div class="wrap">
+    <div class="signup">
+      <div>
+        <div class="mono" data-i18n="f.eyebrow">Early access</div>
+        <h2 data-i18n="f.title">Be the first to know</h2>
+        <p class="lead" data-i18n="f.lead">Leave your email and we'll send you more information. If you want, we'll also let you know as soon as early access opens.</p>
+        <p class="legal" data-i18n="f.who">We are a student team from LEINN at Mondragon University, based in Berlin.</p>
+      </div>
+      <form id="form" novalidate>
+        <div>
+          <label for="email" data-i18n="f.email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" placeholder="name@example.com">
+        </div>
+        <div class="row">
+          <div>
+            <label for="name"><span data-i18n="f.name">Your name</span> <span class="opt" data-i18n="f.optional">(optional)</span></label>
+            <input id="name" name="name" type="text" autocomplete="given-name">
+          </div>
+          <div>
+            <label for="country" data-i18n="f.country">Country</label>
+            <input id="country" name="country" type="text" autocomplete="country-name">
+          </div>
+        </div>
+        <div data-seg="kids">
+          <label id="vlabel" data-i18n="f.version">Which version interests you?</label>
+          <div class="choice" role="radiogroup" aria-labelledby="vlabel">
+            <label data-seg="kids"><input type="radio" name="version" value="Home"><span data-i18n="ver.home">Home</span></label>
+            <label data-seg="kids"><input type="radio" name="version" value="School"><span data-i18n="ver.school">School</span></label>
+            <label data-seg="kids"><input type="radio" name="version" value="Both" checked><span data-i18n="f.both">Both</span></label>
+            <label data-seg="adults"><input type="radio" name="version" value="Everyday (adult)"><span data-i18n="f.adult">Everyday (adult)</span></label>
+          </div>
+        </div>
+        <div data-seg="kids">
+          <label for="age" data-i18n="f.age">Your child's age</label>
+          <select id="age" name="age">
+            <option value="" data-i18n="f.ageNone">Choose</option>
+            <option value="5-7">5–7</option>
+            <option value="8-10">8–10</option>
+            <option value="11-13">11–13</option>
+            <option value="14+">14+</option>
+            <option value="No child" data-i18n="f.ageOther">I don't have a child with dyslexia</option>
+          </select>
+        </div>
+        <label class="check"><input type="checkbox" name="early" id="early" checked><span data-i18n="f.early">Yes, email me when early access opens.</span></label>
+        <label class="check"><input type="checkbox" name="consent" id="consent" required><span data-i18n="f.consent">I agree that my data is used only to send me information about this product. I can unsubscribe at any time.</span></label>
+        <p class="legal"><a href="legal.html#privacy" target="_blank" rel="noopener" data-i18n="f.privacyLink">Read the privacy notice</a></p>
+        <div class="msg" id="msg" role="status" aria-live="polite"></div>
+        <button class="btn btn-primary" type="submit" data-i18n="f.submit">Sign up</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="mono">FAQ</div>
+    <h2 data-i18n="faq.title">Questions parents ask</h2>
+    <details><summary data-i18n="faq.q1">Do they cure dyslexia?</summary><p data-i18n="faq.a1">No. Dyslexia does not go away. The goal is that your child reads with less effort, makes fewer mistakes and, over time, needs the glasses less.</p></details>
+    <details><summary data-i18n="faq.q2">My child already wears glasses.</summary><p data-i18n="faq.a2">We plan to offer prescription lenses through opticians.</p></details>
+    <details><summary data-i18n="faq.q3">Will the school allow them?</summary><p data-i18n="faq.a3">We are talking to schools to present them as a learning support. The School version has exam mode, so the teacher stays in control during tests.</p></details>
+    <details><summary data-i18n="faq.q4">When will they be available?</summary><p data-i18n="faq.a4">We are building the first prototype now. Sign up and you will be among the first to hear.</p></details>
+    <details><summary data-i18n="faq.q5">How much will they cost?</summary><p data-i18n="faq.a5">We haven't set a price yet. Sign up and you'll hear it first.</p></details>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong class="brand">Kalei</strong> · <span data-i18n="foot.text">A student project in development. Nothing is for sale yet.</span></p>
+    <p><span data-i18n="foot.contact">Contact</span>: <a href="mailto:kalei.glasses@gmail.com">kalei.glasses@gmail.com</a> · <a href="legal.html#legal" data-i18n="foot.legal">Legal notice</a> · <a href="legal.html#privacy" data-i18n="foot.privacy">Privacy</a></p>
+  </div>
+</footer>
+
+<script>
+/* ===== CONFIG ===== */
+const BRAND = "Kalei";                // product name shown on the page
+const FORM = {
+  action: "https://docs.google.com/forms/d/e/1FAIpQLSdyA8pfZFpSt-iEUPR-3-EjNJaLOX6bVFWdRMl_-_T6urJUEw/formResponse",
+  fields: { email:"entry.894603753", name:"entry.440837026", country:"entry.2138404620",
+            version:"entry.666918918", age:"entry.1845083093", early:"entry.555648062" }
+};
+
+const T = {
+en:{
+ "img.alt":"Slim AI glasses with a small camera in the bridge",
+ "prod.eyebrow":"Inside the glasses","prod.title":"Everything they need, nothing they don't","prod.lead":"Tap a number to see what each part does.",
+ "p1t":"Camera","p1":"In the bridge, between the eyes. It looks at the page your child is reading or writing. Images are analysed and deleted, never stored.",
+ "p2t":"Exam light","p2":"A small light on the outside of the arm. It turns on during exams, so the teacher can see at a glance that corrections are off. Your child doesn't see it.",
+ "p3t":"Display in the lens","p3":"A tiny transparent display shows the adapted text and hints. Only your child can see it, and the lens stays clear.",
+ "p4t":"Battery and chip","p4":"Hidden inside the arms, so the front stays slim. Home lasts for homework sessions; School is built for a full school day.",
+ "p5t":"Speaker near the ear","p5":"Reads words and sentences aloud, quietly, only for your child.",
+ "p6t":"Clear lenses","p6":"They look like normal glasses. Prescription lenses are planned through opticians.",
+ "demo.eyebrow":"See the difference","demo.title":"Switch the glasses on","demo.lead":"This is what your child sees with and without them.",
+ "demo.off":"Without glasses","demo.on":"With glasses",
+ "demo.readT":"Reading",
+ "demo.page":"The little fox lived at the edge of an enormous forest. Every morning she explored the mysterious paths between the trees, looking for something new. One day she discovered a hidden river that nobody in the village had ever seen.",
+ "demo.aloud":"Read aloud ▸",
+ "demo.adapted":"The little fox lived at the edge of an <mark>e<span class=\"sy\">·</span>nor<span class=\"sy\">·</span>mous</mark> forest.",
+ "demo.def":"<b>enormous:</b> very, very big",
+ "demo.readC":"A font that research found easier with dyslexia, more space between letters and words, long words split into syllables, and a dictionary for any word.",
+ "demo.spellT":"Spelling",
+ "demo.note":"I like the park <span class=\"wrong\">becaus</span><span class=\"fixed\">because</span> it is big and green.",
+ "demo.hint":"Check this word again. Can you find what's missing?",
+ "demo.answer":"Show answer","demo.reset":"Try again",
+ "demo.spellC":"First a hint, then the answer, so your child learns the word instead of just copying it. The mistake goes to the app for practice later.",
+ "font.title":"Choose the font","font.lexend":"Default","font.verdana":"One of the fonts studies found easier to read with dyslexia","font.od":"Popular, but studies haven't found it improves reading. Some children just prefer it.","font.spacing":"Extra spacing","font.reset":"Reset",
+ "ver.title2":"Choose yours","tab.kids":"Kids","tab.adults":"Adults",
+ "kids.eyebrow":"For children","kids.title":"Their glasses, their colour","kids.lead":"Discreet black, or a clear colour they choose. The same technology inside.",
+ "kids.colour":"Colour","c.black":"Black","c.blue":"Clear blue","c.pink":"Clear pink","c.yellow":"Clear yellow","kids.both":"Every colour comes in Home and School.",
+ "ad.eyebrow":"For adults","ad.lead":"Dyslexia doesn't end at school. For reading and writing at work, at university or at home.",
+ "ad.f1":"All reading and writing help","ad.f2":"Practice app with your own progress","ad.f3":"Discreet black frame","ad.pick":"I'm interested in Everyday",
+ "f.adult":"Everyday (adult)",
+ "priv.p3t":"Discreet, or their colour","priv.p3":"Black that looks like normal glasses, or a clear colour your child picks. Their choice, not a medical device.",
+ "nav.cta":"Get early access",
+ "hero.eyebrow":"AI glasses for children with dyslexia",
+ "hero.title":"Reading aloud shouldn't be scary.",
+ "hero.lead":"Smart glasses that adapt text to the way your child reads, spot spelling mistakes while they write, and turn those mistakes into five minutes of practice a day.",
+ "hero.cta":"Get early access","hero.cta2":"Compare Home and School",
+ "hero.note":"In development. Signing up is free and you only get news about the product.",
+ "hud.read":"Reading","hud.word":"ad · ven · ture","hud.write":"Writing","hud.fix":"<s>becaus</s> → try again","hud.app":"App","hud.practice":"5 new words to practise today",
+ "how.eyebrow":"How it works","how.title":"Three steps, no extra effort",
+ "how.s1t":"It sees the page","how.s1":"A small camera in the frame recognises whether your child is reading or writing.",
+ "how.s2t":"It adapts to your child","how.s2":"The text appears in the lens in a font that research found easier with dyslexia, with extra spacing and long words split into syllables. It can also read it aloud and explain any word.",
+ "how.s3t":"It helps them learn","how.s3":"When they write, it marks a mistake and lets them try again before showing the answer. The app turns their own mistakes into short flashcards and quizzes.",
+ "proof.eyebrow":"Built on what already works","proof.title":"No science fiction",
+ "proof.lead":"Every part of these glasses already exists today. What is new is putting them together for children with dyslexia.",
+ "proof.p1t":"Glasses that read","proof.p1":"AI glasses for blind people already read printed and handwritten text aloud.",
+ "proof.p2t":"A screen in the lens","proof.p2":"Display glasses on sale today show text inside the lens and last around six hours of mixed use.",
+ "proof.p3t":"Backed by research","proof.p3":"Font choice (Rello and Baeza-Yates, 2013) and extra letter spacing (Zorzi et al., 2012) helped readers with dyslexia make fewer mistakes.",
+ "proof.honest":"To be honest: these studies are small, so the results are promising, not final. That is why we will test with real families before promising anything.",
+ "ver.eyebrow":"Versions","ver.title":"At home or at school",
+ "ver.home":"Home","ver.homeDesc":"For homework and reading at home, with you nearby.",
+ "ver.home1":"All reading and writing help","ver.home2":"Practice app with progress for parents","ver.home3":"Light, everyday frame",
+ "ver.pickHome":"I'm interested in Home",
+ "ver.tag":"For the classroom","ver.school":"School","ver.schoolDesc":"Everything in Home, built to last a full school day and keep the teacher in control.",
+ "ver.school1":"Exam mode that only the teacher can unlock","ver.school2":"Battery for the whole school day","ver.school3":"Reinforced frame for the playground",
+ "ver.pickSchool":"I'm interested in School",
+ "t.feature":"Feature","t.r1":"Reading aids: font, spacing, syllables","t.r2":"Reads aloud and explains words","t.r3":"Spelling help while writing",
+ "t.r4":"Practice app: flashcards and quizzes","t.r5":"Progress for parents","t.r6":"Exam mode: corrections off, unlocked only by the teacher",
+ "t.r7":"Teacher view on phone or tablet","t.r8":"Battery","t.r8h":"Homework sessions","t.r8s":"Full school day","t.r9":"Frame","t.r9h":"Light","t.r9s":"Reinforced",
+ "ver.foot":"These are the goals for the first version, based on smart glasses that exist today. They may change as we test.",
+ "priv.eyebrow":"Safety and privacy","priv.title":"Designed for children, first",
+ "priv.p1t":"No video is stored","priv.p1":"The camera only looks at the page. The image is analysed and deleted straight away. It is never saved or shared.",
+ "priv.p2t":"Minimal data","priv.p2":"We only keep what helps your child learn, like the words they find hard. You can delete it at any time.",
+ "f.eyebrow":"Early access","f.title":"Be the first to know",
+ "f.lead":"Leave your email and we'll send you more information. If you want, we'll also let you know as soon as early access opens.",
+ "f.who":"We are a student team from LEINN at Mondragon University, based in Berlin.",
+ "f.email":"Email","f.name":"Your name","f.optional":"(optional)","f.country":"Country","f.version":"Which version interests you?","f.both":"Both",
+ "f.age":"Your child's age","f.ageNone":"Choose","f.ageOther":"I don't have a child with dyslexia",
+ "f.early":"Yes, email me when early access opens.",
+ "f.consent":"I agree that my data is used only to send me information about this product. I can unsubscribe at any time.",
+ "f.submit":"Sign up",
+ "f.errEmail":"Please enter a valid email.","f.errConsent":"Please accept the privacy note to sign up.",
+ "f.ok":"Thank you! You're on the list. We'll email you when there's news.","f.errSend":"Something went wrong. Please try again in a moment.",
+ "faq.title":"Questions parents ask",
+ "faq.q1":"Do they cure dyslexia?","faq.a1":"No. Dyslexia does not go away. The goal is that your child reads with less effort, makes fewer mistakes and, over time, needs the glasses less.",
+ "faq.q2":"My child already wears glasses.","faq.a2":"We plan to offer prescription lenses through opticians.",
+ "faq.q3":"Will the school allow them?","faq.a3":"We are talking to schools to present them as a learning support. The School version has exam mode, so the teacher stays in control during tests.",
+ "faq.q4":"When will they be available?","faq.a4":"We are building the first prototype now. Sign up and you will be among the first to hear.",
+ "faq.q5":"How much will they cost?","faq.a5":"We haven't set a price yet. Sign up and you'll hear it first.",
+ "foot.text":"A student project in development. Nothing is for sale yet.",
+ "foot.contact":"Contact","foot.legal":"Legal notice","foot.privacy":"Privacy","f.privacyLink":"Read the privacy notice",
+ "gate.eyebrow":"AI glasses for dyslexia","gate.title":"Who are the glasses for?","gate.kids":"For my child","gate.kidsSub":"Kids · Home and School, in four colours","gate.adults":"For me","gate.adultsSub":"Adults · Everyday, in discreet black","gate.go":"Continue →"
+},
+de:{
+ "img.alt":"Schlanke KI-Brille mit einer kleinen Kamera im Steg",
+ "prod.eyebrow":"In der Brille","prod.title":"Alles, was sie brauchen, nichts zu viel","prod.lead":"Tippen Sie auf eine Zahl, um zu sehen, was jedes Teil macht.",
+ "p1t":"Kamera","p1":"Im Steg, zwischen den Augen. Sie schaut auf die Seite, die Ihr Kind liest oder schreibt. Bilder werden ausgewertet und gelöscht, nie gespeichert.",
+ "p2t":"Prüfungslicht","p2":"Ein kleines Licht außen am Bügel. Es leuchtet während Prüfungen, damit die Lehrkraft sofort sieht, dass die Korrekturen aus sind. Ihr Kind sieht es nicht.",
+ "p3t":"Display im Glas","p3":"Ein winziges, durchsichtiges Display zeigt den angepassten Text und Hinweise. Nur Ihr Kind sieht es, und das Glas bleibt klar.",
+ "p4t":"Akku und Chip","p4":"Versteckt in den Bügeln, damit die Front schlank bleibt. Home reicht für die Hausaufgaben, School ist für einen ganzen Schultag gebaut.",
+ "p5t":"Lautsprecher am Ohr","p5":"Liest Wörter und Sätze vor, leise, nur für Ihr Kind.",
+ "p6t":"Klare Gläser","p6":"Sie sieht aus wie eine normale Brille. Gläser mit Sehstärke über Optiker sind geplant.",
+ "demo.eyebrow":"Sehen Sie den Unterschied","demo.title":"Schalten Sie die Brille ein","demo.lead":"So sieht Ihr Kind die Seite mit und ohne Brille.",
+ "demo.off":"Ohne Brille","demo.on":"Mit Brille",
+ "demo.readT":"Lesen",
+ "demo.page":"Der kleine Fuchs lebte am Rand eines riesigen Waldes. Jeden Morgen erkundete er die geheimnisvollen Wege zwischen den Bäumen und suchte etwas Neues. Eines Tages entdeckte er einen versteckten Fluss, den im Dorf noch niemand gesehen hatte.",
+ "demo.aloud":"Vorlesen ▸",
+ "demo.adapted":"Der kleine Fuchs lebte am Rand eines <mark>rie<span class=\"sy\">·</span>si<span class=\"sy\">·</span>gen</mark> Waldes.",
+ "demo.def":"<b>riesig:</b> sehr, sehr groß",
+ "demo.readC":"Eine Schrift, die laut Forschung bei Legasthenie leichter zu lesen ist, mehr Abstand zwischen Buchstaben und Wörtern, lange Wörter in Silben und ein Wörterbuch für jedes Wort.",
+ "demo.spellT":"Rechtschreibung",
+ "demo.note":"Ich mag den Park, <span class=\"wrong\">wiel</span><span class=\"fixed\">weil</span> er groß und grün ist.",
+ "demo.hint":"Schau dir dieses Wort noch einmal an. Findest du den Fehler?",
+ "demo.answer":"Lösung zeigen","demo.reset":"Noch mal versuchen",
+ "demo.spellC":"Erst ein Hinweis, dann die Lösung: So lernt Ihr Kind das Wort, statt es nur abzuschreiben. Der Fehler kommt zum späteren Üben in die App.",
+ "font.title":"Schrift wählen","font.lexend":"Standard","font.verdana":"Eine der Schriften, die laut Studien bei Legasthenie leichter zu lesen sind","font.od":"Beliebt, aber Studien haben keine Verbesserung beim Lesen gefunden. Manche Kinder mögen sie einfach lieber.","font.spacing":"Mehr Abstand","font.reset":"Zurücksetzen",
+ "ver.title2":"Wählen Sie Ihre","tab.kids":"Kinder","tab.adults":"Erwachsene",
+ "kids.eyebrow":"Für Kinder","kids.title":"Ihre Brille, ihre Farbe","kids.lead":"Dezentes Schwarz oder eine transparente Farbe, die Ihr Kind aussucht. Innen dieselbe Technik.",
+ "kids.colour":"Farbe","c.black":"Schwarz","c.blue":"Transparent Blau","c.pink":"Transparent Rosa","c.yellow":"Transparent Gelb","kids.both":"Jede Farbe gibt es als Home und School.",
+ "ad.eyebrow":"Für Erwachsene","ad.lead":"Legasthenie endet nicht mit der Schule. Zum Lesen und Schreiben bei der Arbeit, an der Uni oder zu Hause.",
+ "ad.f1":"Alle Hilfen beim Lesen und Schreiben","ad.f2":"Übungs-App mit Ihrem eigenen Fortschritt","ad.f3":"Dezenter schwarzer Rahmen","ad.pick":"Ich interessiere mich für Everyday",
+ "f.adult":"Everyday (Erwachsene)",
+ "priv.p3t":"Dezent oder in ihrer Farbe","priv.p3":"Schwarz wie eine normale Brille oder eine transparente Farbe, die Ihr Kind aussucht. Seine Wahl, kein medizinisches Gerät.",
+ "nav.cta":"Frühen Zugang sichern",
+ "hero.eyebrow":"KI-Brille für Kinder mit Legasthenie oder LRS",
+ "hero.title":"Vorlesen sollte keine Angst machen.",
+ "hero.lead":"Eine smarte Brille, die Texte an die Art anpasst, wie Ihr Kind liest, Rechtschreibfehler beim Schreiben erkennt und daraus fünf Minuten Übung am Tag macht.",
+ "hero.cta":"Frühen Zugang sichern","hero.cta2":"Home und School vergleichen",
+ "hero.note":"In Entwicklung. Die Anmeldung ist kostenlos, Sie erhalten nur Neuigkeiten zum Produkt.",
+ "hud.read":"Lesen","hud.word":"A · ben · teu · er","hud.write":"Schreiben","hud.fix":"<s>wiel</s> → noch mal versuchen","hud.app":"App","hud.practice":"5 neue Wörter zum Üben heute",
+ "how.eyebrow":"So funktioniert's","how.title":"Drei Schritte, kein Mehraufwand",
+ "how.s1t":"Sie sieht die Seite","how.s1":"Eine kleine Kamera im Rahmen erkennt, ob Ihr Kind gerade liest oder schreibt.",
+ "how.s2t":"Sie passt sich Ihrem Kind an","how.s2":"Der Text erscheint im Glas in einer Schrift, die laut Forschung bei Legasthenie leichter zu lesen ist, mit mehr Abstand und langen Wörtern in Silben geteilt. Sie kann ihn auch vorlesen und jedes Wort erklären.",
+ "how.s3t":"Sie hilft beim Lernen","how.s3":"Beim Schreiben markiert sie einen Fehler und lässt Ihr Kind es noch einmal versuchen, bevor sie die Lösung zeigt. Die App macht aus den eigenen Fehlern kurze Lernkarten und Quizze.",
+ "proof.eyebrow":"Gebaut auf dem, was schon funktioniert","proof.title":"Keine Science-Fiction",
+ "proof.lead":"Jeder Teil dieser Brille existiert heute schon. Neu ist, alles für Kinder mit Legasthenie zusammenzubringen.",
+ "proof.p1t":"Brillen, die lesen","proof.p1":"KI-Brillen für blinde Menschen lesen schon heute gedruckten und handgeschriebenen Text vor.",
+ "proof.p2t":"Ein Display im Glas","proof.p2":"Display-Brillen, die heute im Handel sind, zeigen Text im Glas an und halten bei gemischter Nutzung rund sechs Stunden.",
+ "proof.p3t":"Von der Forschung gestützt","proof.p3":"Die Schriftwahl (Rello und Baeza-Yates, 2013) und ein größerer Buchstabenabstand (Zorzi et al., 2012) halfen Lesern mit Legasthenie, weniger Fehler zu machen.",
+ "proof.honest":"Ehrlich gesagt: Diese Studien sind klein, die Ergebnisse also vielversprechend, aber nicht endgültig. Deshalb testen wir mit echten Familien, bevor wir etwas versprechen.",
+ "ver.eyebrow":"Versionen","ver.title":"Zu Hause oder in der Schule",
+ "ver.home":"Home","ver.homeDesc":"Für Hausaufgaben und Lesen zu Hause, wenn Sie in der Nähe sind.",
+ "ver.home1":"Alle Hilfen beim Lesen und Schreiben","ver.home2":"Übungs-App mit Fortschritt für Eltern","ver.home3":"Leichter Alltagsrahmen",
+ "ver.pickHome":"Ich interessiere mich für Home",
+ "ver.tag":"Für das Klassenzimmer","ver.school":"School","ver.schoolDesc":"Alles aus Home, gebaut für einen ganzen Schultag, und die Lehrkraft behält die Kontrolle.",
+ "ver.school1":"Prüfungsmodus, den nur die Lehrkraft entsperren kann","ver.school2":"Akku für den ganzen Schultag","ver.school3":"Verstärkter Rahmen für den Schulhof",
+ "ver.pickSchool":"Ich interessiere mich für School",
+ "t.feature":"Funktion","t.r1":"Lesehilfen: Schrift, Abstand, Silben","t.r2":"Liest vor und erklärt Wörter","t.r3":"Rechtschreibhilfe beim Schreiben",
+ "t.r4":"Übungs-App: Lernkarten und Quizze","t.r5":"Fortschritt für Eltern","t.r6":"Prüfungsmodus: Korrekturen aus, nur von der Lehrkraft entsperrbar",
+ "t.r7":"Ansicht für Lehrkräfte auf Handy oder Tablet","t.r8":"Akku","t.r8h":"Hausaufgaben","t.r8s":"Ganzer Schultag","t.r9":"Rahmen","t.r9h":"Leicht","t.r9s":"Verstärkt",
+ "ver.foot":"Das sind die Ziele für die erste Version, auf Basis heutiger smarter Brillen. Sie können sich während der Tests ändern.",
+ "priv.eyebrow":"Sicherheit und Datenschutz","priv.title":"Zuerst für Kinder gemacht",
+ "priv.p1t":"Kein Video wird gespeichert","priv.p1":"Die Kamera schaut nur auf die Seite. Das Bild wird ausgewertet und sofort gelöscht. Es wird nie gespeichert oder geteilt.",
+ "priv.p2t":"So wenig Daten wie möglich","priv.p2":"Wir behalten nur, was Ihrem Kind beim Lernen hilft, etwa die Wörter, die ihm schwerfallen. Sie können das jederzeit löschen.",
+ "f.eyebrow":"Früher Zugang","f.title":"Als Erste erfahren",
+ "f.lead":"Hinterlassen Sie Ihre E-Mail und wir schicken Ihnen mehr Informationen. Wenn Sie möchten, sagen wir Ihnen auch Bescheid, sobald der frühe Zugang startet.",
+ "f.who":"Wir sind ein Studierendenteam von LEINN an der Mondragon University, mit Sitz in Berlin.",
+ "f.email":"E-Mail","f.name":"Ihr Name","f.optional":"(optional)","f.country":"Land","f.version":"Welche Version interessiert Sie?","f.both":"Beide",
+ "f.age":"Alter Ihres Kindes","f.ageNone":"Bitte wählen","f.ageOther":"Ich habe kein Kind mit Legasthenie",
+ "f.early":"Ja, schreiben Sie mir, wenn der frühe Zugang startet.",
+ "f.consent":"Ich bin einverstanden, dass meine Daten nur genutzt werden, um mir Informationen zu diesem Produkt zu schicken. Ich kann mich jederzeit abmelden.",
+ "f.submit":"Anmelden",
+ "f.errEmail":"Bitte geben Sie eine gültige E-Mail ein.","f.errConsent":"Bitte akzeptieren Sie den Datenschutzhinweis.",
+ "f.ok":"Danke! Sie stehen auf der Liste. Wir schreiben Ihnen, sobald es Neuigkeiten gibt.","f.errSend":"Etwas ist schiefgelaufen. Bitte versuchen Sie es gleich noch einmal.",
+ "faq.title":"Was Eltern fragen",
+ "faq.q1":"Heilt sie Legasthenie?","faq.a1":"Nein. Legasthenie verschwindet nicht. Das Ziel ist, dass Ihr Kind mit weniger Mühe liest, weniger Fehler macht und die Brille mit der Zeit seltener braucht.",
+ "faq.q2":"Mein Kind trägt schon eine Brille.","faq.a2":"Wir planen, Gläser mit Sehstärke über Optiker anzubieten.",
+ "faq.q3":"Erlaubt die Schule das?","faq.a3":"Wir sprechen mit Schulen, um die Brille als Lernhilfe vorzustellen. Die School-Version hat einen Prüfungsmodus, damit die Lehrkraft bei Tests die Kontrolle behält.",
+ "faq.q4":"Wann ist sie erhältlich?","faq.a4":"Wir bauen gerade den ersten Prototyp. Melden Sie sich an, dann erfahren Sie es als Erste.",
+ "faq.q5":"Was wird sie kosten?","faq.a5":"Einen Preis gibt es noch nicht. Melden Sie sich an, dann erfahren Sie ihn zuerst.",
+ "foot.text":"Ein Studierendenprojekt in Entwicklung. Noch wird nichts verkauft.",
+ "foot.contact":"Kontakt","foot.legal":"Impressum","foot.privacy":"Datenschutz","f.privacyLink":"Datenschutzerklärung lesen",
+ "gate.eyebrow":"KI-Brille bei Legasthenie","gate.title":"Für wen ist die Brille?","gate.kids":"Für mein Kind","gate.kidsSub":"Kinder · Home und School, in vier Farben","gate.adults":"Für mich","gate.adultsSub":"Erwachsene · Everyday, in dezentem Schwarz","gate.go":"Weiter →"
+},
+/* adult versions: only the texts that change */
+en_ad:{
+ "hero.eyebrow":"AI glasses for adults with dyslexia",
+ "hero.title":"Reading shouldn't slow you down.",
+ "hero.lead":"Smart glasses that adapt text to the way you read, spot spelling mistakes while you write, and turn those mistakes into five minutes of practice a day.",
+ "hero.cta2":"See Everyday",
+ "how.s1":"A small camera in the frame recognises whether you are reading or writing.",
+ "how.s2t":"It adapts to you",
+ "how.s3t":"It helps you improve","how.s3":"When you write, it marks a mistake and lets you try again before showing the answer. The app turns your own mistakes into short flashcards and quizzes.",
+ "prod.title":"Everything you need, nothing you don't",
+ "p1":"In the bridge, between the eyes. It looks at the page you are reading or writing. Images are analysed and deleted, never stored.",
+ "p3":"A tiny transparent display shows the adapted text and hints. Only you can see it, and the lens stays clear.",
+ "p4":"Hidden inside the arms, so the front stays slim.",
+ "p5":"Reads words and sentences aloud, quietly, only for you.",
+ "demo.lead":"This is what you see with and without them.",
+ "demo.page":"The quarterly report shows an unprecedented increase in customer satisfaction. The team recommends keeping the current strategy and reviewing the budget before the next meeting with the board.",
+ "demo.adapted":"The quarterly report shows an <mark>un<span class=\"sy\">·</span>pre<span class=\"sy\">·</span>ce<span class=\"sy\">·</span>dent<span class=\"sy\">·</span>ed</mark> increase in customer satisfaction.",
+ "demo.def":"<b>unprecedented:</b> never seen or done before",
+ "demo.note":"I'll send you the report <span class=\"wrong\">tomorow</span><span class=\"fixed\">tomorrow</span> morning.",
+ "demo.hint":"Check this word again. Is a letter missing?",
+ "demo.spellC":"First a hint, then the answer, so you learn the word instead of just copying it. The mistake goes to the app for practice later.",
+ "proof.lead":"Every part of these glasses already exists today. What is new is putting them together for people with dyslexia.",
+ "proof.honest":"To be honest: these studies are small, so the results are promising, not final. That is why we will test with real users before promising anything.",
+ "ver.eyebrow":"Your version","ver.title2":"Made for every day",
+ "priv.title":"Private by design",
+ "priv.p2":"We only keep what helps you learn, like the words you find hard. You can delete it at any time.",
+ "priv.p3t":"Discreet black","priv.p3":"They look like normal glasses. Nothing that makes you stand out at work or in class.",
+ "faq.title":"Questions people ask",
+ "faq.a1":"No. Dyslexia does not go away. The goal is that you read with less effort and make fewer mistakes.",
+ "faq.q2":"I already wear glasses.",
+ "faq.q3":"Can I use them in university exams?","faq.a3":"That depends on your university's rules for exam support. We will share what we learn as we test."
+},
+de_ad:{
+ "hero.eyebrow":"KI-Brille für Erwachsene mit Legasthenie",
+ "hero.title":"Lesen sollte Sie nicht ausbremsen.",
+ "hero.lead":"Eine smarte Brille, die Texte an die Art anpasst, wie Sie lesen, Rechtschreibfehler beim Schreiben erkennt und daraus fünf Minuten Übung am Tag macht.",
+ "hero.cta2":"Everyday ansehen",
+ "how.s1":"Eine kleine Kamera im Rahmen erkennt, ob Sie gerade lesen oder schreiben.",
+ "how.s2t":"Sie passt sich Ihnen an",
+ "how.s3t":"Sie hilft Ihnen, besser zu werden","how.s3":"Beim Schreiben markiert sie einen Fehler und lässt Sie es noch einmal versuchen, bevor sie die Lösung zeigt. Die App macht aus Ihren eigenen Fehlern kurze Lernkarten und Quizze.",
+ "prod.title":"Alles, was Sie brauchen, nichts zu viel",
+ "p1":"Im Steg, zwischen den Augen. Sie schaut auf die Seite, die Sie lesen oder schreiben. Bilder werden ausgewertet und gelöscht, nie gespeichert.",
+ "p3":"Ein winziges, durchsichtiges Display zeigt den angepassten Text und Hinweise. Nur Sie sehen es, und das Glas bleibt klar.",
+ "p4":"Versteckt in den Bügeln, damit die Front schlank bleibt.",
+ "p5":"Liest Wörter und Sätze vor, leise, nur für Sie.",
+ "demo.lead":"So sehen Sie die Seite mit und ohne Brille.",
+ "demo.page":"Der Quartalsbericht zeigt eine beispiellose Steigerung der Kundenzufriedenheit. Das Team empfiehlt, die aktuelle Strategie beizubehalten und das Budget vor der nächsten Sitzung mit dem Vorstand zu prüfen.",
+ "demo.adapted":"Der Quartalsbericht zeigt eine <mark>bei<span class=\"sy\">·</span>spiel<span class=\"sy\">·</span>lo<span class=\"sy\">·</span>se</mark> Steigerung der Kundenzufriedenheit.",
+ "demo.def":"<b>beispiellos:</b> so noch nie dagewesen",
+ "demo.note":"Ich schicke Ihnen den Bericht <span class=\"wrong\">morgn</span><span class=\"fixed\">morgen</span> früh.",
+ "demo.hint":"Schauen Sie sich dieses Wort noch einmal an. Fehlt ein Buchstabe?",
+ "demo.spellC":"Erst ein Hinweis, dann die Lösung: So lernen Sie das Wort, statt es nur abzuschreiben. Der Fehler kommt zum späteren Üben in die App.",
+ "proof.lead":"Jeder Teil dieser Brille existiert heute schon. Neu ist, alles für Menschen mit Legasthenie zusammenzubringen.",
+ "proof.honest":"Ehrlich gesagt: Diese Studien sind klein, die Ergebnisse also vielversprechend, aber nicht endgültig. Deshalb testen wir mit echten Nutzern, bevor wir etwas versprechen.",
+ "ver.eyebrow":"Ihre Version","ver.title2":"Für jeden Tag gemacht",
+ "priv.title":"Datenschutz von Anfang an",
+ "priv.p2":"Wir behalten nur, was Ihnen beim Lernen hilft, etwa die Wörter, die Ihnen schwerfallen. Sie können das jederzeit löschen.",
+ "priv.p3t":"Dezentes Schwarz","priv.p3":"Sie sieht aus wie eine normale Brille. Nichts, womit Sie bei der Arbeit oder im Hörsaal auffallen.",
+ "faq.title":"Häufige Fragen",
+ "faq.a1":"Nein. Legasthenie verschwindet nicht. Das Ziel ist, dass Sie mit weniger Mühe lesen und weniger Fehler machen.",
+ "faq.q2":"Ich trage schon eine Brille.",
+ "faq.q3":"Darf ich sie in Prüfungen an der Uni nutzen?","faq.a3":"Das hängt von den Regeln Ihrer Hochschule zum Nachteilsausgleich ab. Wir teilen, was wir beim Testen lernen."
+}};
+
+let lang = "en", seg = null;
+function tr(k){ const o = seg==="adults" && T[lang+"_ad"]; return (o && o[k]!=null) ? o[k] : T[lang][k]; }
+function placeThumb(sw){
+  const b = sw.querySelector('button[aria-pressed="true"]'), t = sw.querySelector(".thumb");
+  if(b && t){ t.style.left = b.offsetLeft + "px"; t.style.width = b.offsetWidth + "px"; }
+}
+function setDemo(d, on){
+  const st = d.querySelector(".stage"), sw = d.querySelector(".switch");
+  st.classList.toggle("on", on); sw.classList.toggle("on", on);
+  if(!on) st.classList.remove("solved");
+  sw.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", (b.dataset.v==="on")===on));
+  requestAnimationFrame(()=>placeThumb(sw));
+}
+function setLang(l){
+  lang = T[l] ? l : "en";
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const v=tr(el.dataset.i18n); if(v!=null) el.textContent=v;});
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{const v=tr(el.dataset.i18nHtml); if(v!=null) el.innerHTML=v;});
+  document.querySelectorAll("[data-i18n-alt]").forEach(el=>{const v=tr(el.dataset.i18nAlt); if(v!=null) el.alt=v;});
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===lang));
+  document.querySelectorAll(".demo").forEach(d=>setDemo(d, d.querySelector(".stage").classList.contains("on")));
+  try{localStorage.setItem("lang",lang)}catch(e){}
+}
+document.querySelectorAll(".brand").forEach(el=>el.textContent=BRAND);
+document.title = BRAND + " AI Glasses";
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
+let saved=null; try{saved=localStorage.getItem("lang")}catch(e){}
+const qs=new URLSearchParams(location.search).get("lang");
+setLang(qs || saved || ((navigator.language||"").toLowerCase().startsWith("de")?"de":"en"));
+
+// font menu
+const FONTS = {lexend:"", verdana:"f-verdana", od:"f-od"};
+function setFont(f, spaced){
+  if(!(f in FONTS)) f = "lexend";
+  document.body.classList.remove("f-verdana","f-od");
+  if(FONTS[f]) document.body.classList.add(FONTS[f]);
+  document.body.classList.toggle("spaced", !!spaced);
+  document.querySelectorAll(".fopt").forEach(b=>b.setAttribute("aria-checked", b.dataset.font===f));
+  document.getElementById("spacing").checked = !!spaced;
+  try{ localStorage.setItem("font", f); localStorage.setItem("spaced", spaced ? "1" : ""); }catch(e){}
+  requestAnimationFrame(()=>document.querySelectorAll(".switch").forEach(placeThumb));
+}
+const fbtn = document.getElementById("fontbtn"), fmenu = document.getElementById("fontmenu");
+function menu(open){ fmenu.classList.toggle("open", open); fbtn.setAttribute("aria-expanded", open); }
+fbtn.addEventListener("click", e=>{ e.stopPropagation(); menu(!fmenu.classList.contains("open")); });
+fmenu.addEventListener("click", e=>e.stopPropagation());
+document.addEventListener("click", ()=>menu(false));
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") menu(false); });
+document.querySelectorAll(".fopt").forEach(b=>b.addEventListener("click", ()=>setFont(b.dataset.font, document.getElementById("spacing").checked)));
+document.getElementById("spacing").addEventListener("change", e=>{
+  const cur = document.querySelector('.fopt[aria-checked="true"]');
+  setFont(cur ? cur.dataset.font : "lexend", e.target.checked);
+});
+document.getElementById("freset").addEventListener("click", ()=>setFont("lexend", false));
+{ let f=null, sp=null; try{ f=localStorage.getItem("font"); sp=localStorage.getItem("spaced"); }catch(e){} setFont(f||"lexend", sp==="1"); }
+
+// before/after switches
+document.querySelectorAll(".demo").forEach(d=>{
+  d.querySelectorAll(".switch button").forEach(b=>b.addEventListener("click",()=>setDemo(d, b.dataset.v==="on")));
+  d.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
+    d.querySelector(".stage").classList.toggle("solved", b.dataset.act==="answer");
+  }));
+});
+addEventListener("resize",()=>document.querySelectorAll(".switch").forEach(placeThumb));
+document.fonts && document.fonts.ready.then(()=>document.querySelectorAll(".switch").forEach(placeThumb));
+
+// product hotspots <-> cards
+function pickPart(n){
+  document.querySelectorAll("[data-part]").forEach(el=>el.classList.toggle("on", el.dataset.part===n));
+}
+document.querySelectorAll(".hot").forEach(h=>h.addEventListener("click",()=>{
+  pickPart(h.dataset.part);
+  const c=document.querySelector(`.part[data-part="${h.dataset.part}"]`);
+  if(c && innerWidth<860) c.scrollIntoView({behavior:"smooth",block:"center"});
+}));
+document.querySelectorAll(".part").forEach(c=>{
+  c.addEventListener("click",()=>pickPart(c.dataset.part));
+  c.addEventListener("mouseenter",()=>pickPart(c.dataset.part));
+});
+
+// kids / adults: one page, two audiences (?for=kids or ?for=adults)
+function setSeg(s, fromClick){
+  seg = (s==="kids"||s==="adults") ? s : null;
+  document.body.classList.toggle("seg-kids", seg==="kids");
+  document.body.classList.toggle("seg-adults", seg==="adults");
+  document.querySelectorAll(".seg [data-seg-btn]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.segBtn===seg));
+  const want = seg==="adults" ? "Everyday (adult)" : "Both";
+  const r=[...document.querySelectorAll("input[name=version]")].find(x=>x.value===want); if(r) r.checked=true;
+  setLang(lang);
+  try{ if(seg) localStorage.setItem("seg", seg); else localStorage.removeItem("seg"); }catch(e){}
+  const u=new URL(location.href); if(seg) u.searchParams.set("for", seg); else u.searchParams.delete("for"); u.hash=""; history.replaceState(null,"",u);
+  if(fromClick) scrollTo({top:0});
+}
+document.querySelectorAll("[data-seg-btn]").forEach(b=>b.addEventListener("click",()=>setSeg(b.dataset.segBtn, true)));
+document.querySelector(".logo").addEventListener("click", e=>{ e.preventDefault(); setSeg(null, true); });
+{ let s0=new URLSearchParams(location.search).get("for"), sv=null; try{ sv=localStorage.getItem("seg"); }catch(e){} setSeg(s0||sv); }
+// colour swatches
+let colourKey = "c.black";
+document.querySelectorAll(".swatches button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".swatches button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+  document.getElementById("kidsimg").src = "img/" + b.dataset.img + ".webp";
+  colourKey = b.dataset.name; const c = document.getElementById("cname");
+  c.dataset.i18n = colourKey; c.textContent = tr(colourKey);
+}));
+["glasses-blue-clear","glasses-pink-clear","glasses-yellow-clear"].forEach(n=>{ const i=new Image(); i.src="img/"+n+".webp"; });
+
+// version buttons preselect the radio
+document.querySelectorAll("[data-pick]").forEach(a=>a.addEventListener("click",()=>{
+  const v={home:"Home",school:"School",everyday:"Everyday (adult)"}[a.dataset.pick];
+  const r=[...document.querySelectorAll("input[name=version]")].find(x=>x.value===v); if(r) r.checked=true;
+}));
+
+// form
+const form=document.getElementById("form"), msg=document.getElementById("msg");
+function show(type,key){msg.className="msg "+type; msg.textContent=tr(key);}
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const email=form.email.value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("err","f.errEmail");
+  if(!form.consent.checked) return show("err","f.errConsent");
+  const data={
+    email, name:form.name.value.trim(), country:form.country.value.trim(),
+    version:form.querySelector("input[name=version]:checked").value,
+    age: seg==="adults" ? "Adult" : form.age.value, early:form.early.checked?"Yes":"No"
+  };
+  if(!FORM.action){ console.warn("Form not connected yet", data); return show("ok","f.ok"); }
+  const body=new URLSearchParams();
+  for(const k in FORM.fields){ if(FORM.fields[k]) body.append(FORM.fields[k], data[k]); }
+  const btn=form.querySelector("button[type=submit]"); btn.disabled=true;
+  try{
+    await fetch(FORM.action,{method:"POST",mode:"no-cors",body});
+    show("ok","f.ok"); form.reset();
+  }catch(err){ show("err","f.errSend"); }
+  btn.disabled=false;
+});
+</script>
+</body>
+</html>
