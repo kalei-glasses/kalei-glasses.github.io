@@ -257,6 +257,38 @@ footer{padding:40px 0 60px;color:var(--muted);font-size:.9rem;border-top:1px sol
   body{font-size:17px}
   th,td{padding:12px 10px;font-size:.92rem}
 }
+
+/* product parts: on computers one panel with arrows and numbers */
+.parts{display:block!important;max-width:620px;margin:0 auto}
+.part{display:none;cursor:default}
+.part.on{display:block;border-color:var(--accent);box-shadow:0 8px 24px rgba(51,85,245,.14)}
+.part h3{font-size:1.2rem}
+.part p{font-size:1.02rem}
+.pnav{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+.pnav button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:600 1rem var(--font);cursor:pointer}
+.pnav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.pnav .arr{font-size:1.2rem}
+@media (max-width:860px){.pnav{gap:5px}.pnav button{width:38px;height:38px;font-size:.9rem}}
+
+/* product parts: on phones a list that opens one part at a time */
+.only-mob{display:none}
+@keyframes invite{0%,100%{box-shadow:0 0 0 0 rgba(51,85,245,.45)}50%{box-shadow:0 0 0 8px rgba(51,85,245,0)}}
+.invite{animation:invite 1.3s ease-in-out 3}
+@media (max-width:860px){.only-desk{display:none}.only-mob{display:inline}}
+@media (max-width:860px){
+ .pnav{display:none}
+ .explorer .hot{pointer-events:none;width:24px;height:24px;font-size:.72rem}
+ .explorer .hot::after{display:none}
+ .parts{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+ .part{display:block;border:0;border-radius:0;box-shadow:none!important;border-top:1px solid var(--line);padding:0;cursor:pointer}
+ .part:first-child{border-top:0}
+ .part h3{margin:0;padding:16px 18px;font-size:1.05rem;position:relative}
+ .part h3::after{content:"+";position:absolute;right:18px;font-size:1.4rem;color:var(--muted);font-weight:400}
+ .part.on h3::after{content:"2";color:var(--accent)}
+ .part p{display:none;padding:0 18px 16px 54px}
+ .part.on{background:var(--accent-soft)}
+ .part.on p{display:block;color:var(--ink)}
+}
 </style>
 </head>
 <body>
@@ -363,7 +395,7 @@ footer{padding:40px 0 60px;color:var(--muted);font-size:.9rem;border-top:1px sol
   <div class="wrap">
     <div class="mono" data-i18n="prod.eyebrow">Inside the glasses</div>
     <h2 data-i18n="prod.title">Everything they need, nothing they don't</h2>
-    <p class="lead" data-i18n="prod.lead">Tap a number to see what each part does.</p>
+    <p class="lead"><span class="only-desk" data-i18n="prod.lead">Tap a number to see what each part does.</span><span class="only-mob" data-i18n="prod.leadM">Tap a part to see what it does.</span></p>
     <div class="explorer">
       <picture><source srcset="img/glasses.webp" type="image/webp"><img src="img/glasses.png" width="1400" height="412" alt="" data-i18n-alt="img.alt"></picture>
       <button class="hot" data-part="1" style="left:73.7%;top:26%" aria-label="1">1</button>
@@ -381,6 +413,7 @@ footer{padding:40px 0 60px;color:var(--muted);font-size:.9rem;border-top:1px sol
       <div class="part" data-part="5"><h3><span class="n">5</span><span data-i18n="p5t">Speaker near the ear</span></h3><p data-i18n="p5">Reads words and sentences aloud, quietly, only for your child.</p></div>
       <div class="part" data-part="6"><h3><span class="n">6</span><span data-i18n="p6t">Clear lenses</span></h3><p data-i18n="p6">They look like normal glasses. Prescription lenses are planned through opticians.</p></div>
     </div>
+    <div class="pnav"><button class="arr" data-step="-1" aria-label="Previous">&larr;</button><button class="pn" data-part="1">1</button><button class="pn" data-part="2" data-seg="kids">2</button><button class="pn" data-part="3">3</button><button class="pn" data-part="4">4</button><button class="pn" data-part="5">5</button><button class="pn" data-part="6">6</button><button class="arr" data-step="1" aria-label="Next">&rarr;</button></div>
   </div>
 </section>
 
@@ -657,7 +690,7 @@ const FORM = {
 const T = {
 en:{
  "img.alt":"Slim AI glasses with a small camera in the bridge",
- "prod.eyebrow":"Inside the glasses","prod.title":"Everything they need, nothing they don't","prod.lead":"Tap a number to see what each part does.",
+ "prod.eyebrow":"Inside the glasses","prod.title":"Everything they need, nothing they don't","prod.lead":"Tap a number to see what each part does.","prod.leadM":"Tap a part to see what it does.",
  "p1t":"Camera","p1":"In the bridge, between the eyes. It looks at the page your child is reading or writing. Images are analysed and deleted, never stored.",
  "p2t":"Exam light","p2":"A small light on the outside of the arm. It turns on during exams, so the teacher can see at a glance that corrections are off. Your child doesn't see it.",
  "p3t":"Display in the lens","p3":"A tiny transparent display shows the adapted text and hints. Only your child can see it, and the lens stays clear.",
@@ -738,7 +771,7 @@ en:{
 },
 de:{
  "img.alt":"Schlanke KI-Brille mit einer kleinen Kamera im Steg",
- "prod.eyebrow":"In der Brille","prod.title":"Alles, was sie brauchen, nichts zu viel","prod.lead":"Tippen Sie auf eine Zahl, um zu sehen, was jedes Teil macht.",
+ "prod.eyebrow":"In der Brille","prod.title":"Alles, was sie brauchen, nichts zu viel","prod.lead":"Tippen Sie auf eine Zahl, um zu sehen, was jedes Teil macht.","prod.leadM":"Tippen Sie auf ein Teil, um zu sehen, was es macht.",
  "p1t":"Kamera","p1":"Im Steg, zwischen den Augen. Sie schaut auf die Seite, die Ihr Kind liest oder schreibt. Bilder werden ausgewertet und gelöscht, nie gespeichert.",
  "p2t":"Prüfungslicht","p2":"Ein kleines Licht außen am Bügel. Es leuchtet während Prüfungen, damit die Lehrkraft sofort sieht, dass die Korrekturen aus sind. Ihr Kind sieht es nicht.",
  "p3t":"Display im Glas","p3":"Ein winziges, durchsichtiges Display zeigt den angepassten Text und Hinweise. Nur Ihr Kind sieht es, und das Glas bleibt klar.",
@@ -938,6 +971,30 @@ document.getElementById("freset").addEventListener("click", ()=>setFont("lexend"
 { let f=null, sp=null; try{ f=localStorage.getItem("font"); sp=localStorage.getItem("spaced"); }catch(e){} setFont(f||"lexend", sp==="1"); }
 
 // before/after switches
+// demos switch on by themselves once, when they come into view
+if("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+  const io = new IntersectionObserver(es=>es.forEach(e=>{
+    const d = e.target.closest(".demo");
+    if(!e.isIntersecting || d.dataset.auto) return;
+    d.dataset.auto = "waiting"; io.unobserve(e.target);
+    setTimeout(()=>{ if(d.dataset.auto!=="waiting") return;
+      d.dataset.auto="done"; setDemo(d, true);
+      const ans = d.querySelector('[data-act="answer"]');
+      if(!ans) return;
+      ans.classList.add("invite");
+      setTimeout(()=>{
+        ans.classList.remove("invite");
+        const r = d.querySelector(".stage").getBoundingClientRect();
+        const seen = r.top < innerHeight && r.bottom > 0;
+        if(d.dataset.auto==="done" && seen) d.querySelector(".stage").classList.add("solved");
+      }, 4000);
+    }, 1500);
+  }), {threshold:.75});
+  document.querySelectorAll(".demo").forEach(d=>{
+    io.observe(d.querySelector(".stage"));
+    d.querySelectorAll(".switch button,[data-act]").forEach(b=>b.addEventListener("click",()=>{ d.dataset.auto="touched"; }));
+  });
+}
 document.querySelectorAll(".demo").forEach(d=>{
   d.querySelectorAll(".switch button").forEach(b=>b.addEventListener("click",()=>setDemo(d, b.dataset.v==="on")));
   d.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
@@ -954,12 +1011,23 @@ function pickPart(n){
 document.querySelectorAll(".hot").forEach(h=>h.addEventListener("click",()=>{
   pickPart(h.dataset.part);
   const c=document.querySelector(`.part[data-part="${h.dataset.part}"]`);
-  if(c && innerWidth<860) c.scrollIntoView({behavior:"smooth",block:"center"});
+  if(false) c.scrollIntoView({behavior:"smooth",block:"center"});
 }));
 document.querySelectorAll(".part").forEach(c=>{
   c.addEventListener("click",()=>pickPart(c.dataset.part));
-  c.addEventListener("mouseenter",()=>pickPart(c.dataset.part));
+  
 });
+
+
+// product parts: arrows and numbers
+function visParts(){ return [...document.querySelectorAll(".part")].filter(c=>getComputedStyle(c).display!=="none"||c.classList.contains("on")).map(c=>c.dataset.part).filter(n=>!(document.body.classList.contains("seg-adults")&&n==="2")); }
+document.querySelectorAll(".pn").forEach(b=>b.addEventListener("click",()=>pickPart(b.dataset.part)));
+document.querySelectorAll(".pnav .arr").forEach(b=>b.addEventListener("click",()=>{
+  const ids=["1","2","3","4","5","6"].filter(n=>!(document.body.classList.contains("seg-adults")&&n==="2"));
+  const cur=document.querySelector(".part.on"); let i=ids.indexOf(cur?cur.dataset.part:"1");
+  i=(i+(+b.dataset.step)+ids.length)%ids.length; pickPart(ids[i]);
+}));
+pickPart("1");
 
 // kids / adults: one page, two audiences (?for=kids or ?for=adults)
 function setSeg(s, fromClick){
